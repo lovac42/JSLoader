@@ -6,6 +6,11 @@
 
 # Card must be tagged as "pgnchess" to activate
 
+# Set to True to allow for randomization
+# see: https://github.com/lovac42/JSLoader/issues/1
+BYPASS_TAG_PROTECTION = False
+
+
 
 import os
 import json
@@ -18,16 +23,14 @@ def getHeads(card):
     js=[]
     tags=card.note().tags
 
-    # https://github.com/lovac42/JSLoader/issues/1
-    # Remove next line to allow randomization
-    if "pgnchess" in tags:
+    if BYPASS_TAG_PROTECTION or "pgnchess" in tags:
         js.append( bundledScript(MOD_DIR+"/pgnchess/pgnyui.js") )
         js.append( bundledScript(MOD_DIR+"/pgnchess/pgnviewer.js") )
         js.append( bundledCSS(MOD_DIR+"/pgnchess/board-min.css") )
 
     # List other head jobs here:
     # ===================================
-    # if "xxxxx" in tags:
+    # if BYPASS_TAG_PROTECTION or "xxxxx" in tags:
         # js.append( bundledScript(MOD_DIR+"/xxxxx/script.js") )
 
     return "".join(js)
