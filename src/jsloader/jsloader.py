@@ -2,7 +2,7 @@
 # Copyright 2019 Lovac42
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 # Support: https://github.com/lovac42/JSLoader
-# Version: 0.0.1; Prototype version made for PGN Chess
+# Version: 0.0.2; Version made for PGN Chess
 
 # Card must be tagged as "pgnchess" to activate
 
@@ -14,27 +14,30 @@ from aqt.webview import AnkiWebView
 from aqt import mw
 
 
-def getHeads():
-    head=""
-    note=mw.reviewer.card.note()
+def getHeads(card):
+    js=[]
+    tags=card.note().tags
 
-    if "pgnchess" in note.tags:
-        head+=bundledScript(MOD_DIR+"/pgnchess/pgnyui.js")
-        head+=bundledScript(MOD_DIR+"/pgnchess/pgnviewer.js")
-        head+=bundledCSS(MOD_DIR+"/pgnchess/board-min.css")
+    # https://github.com/lovac42/JSLoader/issues/1
+    # Remove next line to allow randomization
+    if "pgnchess" in tags:
+        js.append( bundledScript(MOD_DIR+"/pgnchess/pgnyui.js") )
+        js.append( bundledScript(MOD_DIR+"/pgnchess/pgnviewer.js") )
+        js.append( bundledCSS(MOD_DIR+"/pgnchess/board-min.css") )
 
     # List other head jobs here:
     # ===================================
-    # if "xxxxx" in note.tags:
-        # head+=bundledScript(MOD_DIR+"/xxxxx/script.js")
+    # if "xxxxx" in tags:
+        # js.append( bundledScript(MOD_DIR+"/xxxxx/script.js") )
 
-    return head
+    return "".join(js)
 
 
-def head_buffer(self, body, css=None, js=None, head="", _old=None):
-    if not head and mw.state=="review":
-        head=getHeads()
-    return _old(self,body,css,js,head)
+def head_buffer(webview, body, css=None, js=None, head="", _old=None):
+    card=mw.reviewer.card
+    if card:
+        head+=getHeads(card)
+    return _old(webview,body,css,js,head)
 
 
 # === UTILS ===
