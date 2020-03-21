@@ -1,22 +1,15 @@
 # -*- coding: utf-8 -*-
-# Copyright 2019 Lovac42
+# Copyright 2019-2020 Lovac42
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 # Support: https://github.com/lovac42/JSLoader
-# Version: 0.0.2; Version made for PGN Chess
-
-# Card must be tagged as "pgnchess" to activate
-
-# Set to True to allow for randomization
-# see: https://github.com/lovac42/JSLoader/issues/1
-BYPASS_TAG_PROTECTION = False
 
 
-
-import os
-import json
 from anki.hooks import wrap
 from aqt.webview import AnkiWebView
 from aqt import mw
+
+from .utils import *
+from .const import MOD_DIR, BYPASS_TAG_PROTECTION
 
 
 def getHeads(card):
@@ -43,25 +36,5 @@ def head_buffer(webview, body, css=None, js=None, head="", _old=None):
     return _old(webview,body,css,js,head)
 
 
-# === UTILS ===
-
-def bundledScript(fname):
-    return '<script src="%s"></script>' % webBundlePath(fname)
-
-def bundledCSS(fname):
-    return '<link rel="stylesheet" type="text/css" href="%s">' % webBundlePath(fname)
-
-def webBundlePath(path):
-    return "http://127.0.0.1:%d/_addons/%s" % (mw.mediaServer.getPort(), path)
-
-def setWebExports():
-    MOD_ABS,_ = os.path.split(__file__)
-    MOD_DIR = os.path.basename(MOD_ABS)
-    mw.addonManager._webExports[MOD_DIR] = '.*\.(js|css)$'
-    return MOD_DIR
-
-
 # ===== EXEC ===========
-MOD_DIR=setWebExports()
 AnkiWebView.stdHtml=wrap(AnkiWebView.stdHtml,head_buffer,"around")
-
