@@ -9,19 +9,24 @@ from aqt.webview import AnkiWebView
 from aqt import mw
 
 from .utils import *
-from .const import MOD_DIR, BYPASS_TAG_PROTECTION
+from .config import Config
+from .const import MOD_DIR, ADDON_NAME
+
+
+conf = Config(ADDON_NAME)
 
 
 def getHeads(tags):
     js=[]
-    if BYPASS_TAG_PROTECTION or "pgnchess" in tags:
+    bypass = conf.get("bypass_tag_protection", False)
+    if bypass or "pgnchess" in tags:
         js.append( bundledScript(MOD_DIR+"/pgnchess/pgnyui.js") )
         js.append( bundledScript(MOD_DIR+"/pgnchess/pgnviewer.js") )
         js.append( bundledCSS(MOD_DIR+"/pgnchess/board-min.css") )
 
     # List other head jobs here:
     # ===================================
-    # if BYPASS_TAG_PROTECTION or "xxxxx" in tags:
+    # if bypass or "xxxxx" in tags:
         # js.append( bundledScript(MOD_DIR+"/xxxxx/script.js") )
 
     return "".join(js)

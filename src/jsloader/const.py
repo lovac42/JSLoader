@@ -4,14 +4,10 @@
 # Support: https://github.com/lovac42/JSLoader
 
 
-# Set to True to allow for randomization
-# see: https://github.com/lovac42/JSLoader/issues/1
-BYPASS_TAG_PROTECTION = False
-
-
-
 from .utils import setWebExports
 
 MEDIA_EXT = ".*\.(js|css)$"
 
 MOD_DIR = setWebExports(MEDIA_EXT)
+
+ADDON_NAME = "JSLoader"
