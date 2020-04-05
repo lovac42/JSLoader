@@ -12,10 +12,8 @@ from .utils import *
 from .const import MOD_DIR, BYPASS_TAG_PROTECTION
 
 
-def getHeads(card):
+def getHeads(tags):
     js=[]
-    tags=card.note().tags
-
     if BYPASS_TAG_PROTECTION or "pgnchess" in tags:
         js.append( bundledScript(MOD_DIR+"/pgnchess/pgnyui.js") )
         js.append( bundledScript(MOD_DIR+"/pgnchess/pgnviewer.js") )
@@ -29,12 +27,20 @@ def getHeads(card):
     return "".join(js)
 
 
-def head_buffer(webview, body, css=None, js=None, head="", _old=None):
+def head_buffer(webview, *args, **kwargs):
+    old = kwargs.pop('_old')
     card=mw.reviewer.card
     if card:
-        head+=getHeads(card)
-    return _old(webview,body,css,js,head)
+        head = kwargs.get("head",'')
+        head += getHeads(card.note().tags)
+        kwargs["head"] = head
+    return old(webview, *args[:-1], **kwargs)
 
 
 # ===== EXEC ===========
-AnkiWebView.stdHtml=wrap(AnkiWebView.stdHtml,head_buffer,"around")
+
+AnkiWebView.stdHtml=wrap(
+    AnkiWebView.stdHtml,
+    head_buffer,
+    "around"
+)

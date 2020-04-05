@@ -12,4 +12,6 @@ BYPASS_TAG_PROTECTION = False
 
 from .utils import setWebExports
 
-MOD_DIR=setWebExports()
+MEDIA_EXT = ".*\.(js|css)$"
+
+MOD_DIR = setWebExports(MEDIA_EXT)
