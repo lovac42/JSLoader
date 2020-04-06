@@ -3,7 +3,7 @@ set ZIP=C:\PROGRA~1\7-Zip\7z.exe a -tzip -y -r
 set REPO=jsloader
 set NAME=jsloader
 set PACKID=536247578
-set VERSION=0.2.0
+set VERSION=0.2.1
 
 
 echo %VERSION% >%REPO%\VERSION
