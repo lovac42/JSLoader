@@ -32,20 +32,27 @@ def getHeads(tags):
     return "".join(js)
 
 
-def head_buffer(webview, *args, **kwargs):
-    old = kwargs.pop('_old')
+
+
+def head_buffer(head):
     card=mw.reviewer.card
     if card:
-        head = kwargs.get("head",'')
-        head += getHeads(card.note().tags)
-        kwargs["head"] = head
-    return old(webview, *args[:-1], **kwargs)
+        js = getHeads(card.note().tags)
+        if js:
+            head += js
+    return head
+
+def stdHtml21(webview, body, css=None, js=None, head="", _old=None):
+    head = head_buffer(head)
+    return _old(webview,body,css,js,head)
+
+def stdHtml20(webview, body, css="", bodyClass="", loadCB=None, js=None, head="", _old=None):
+    head = head_buffer(head)
+    return _old(webview,body,css,bodyClass,loadCB,js,head)
 
 
 # ===== EXEC ===========
 
-AnkiWebView.stdHtml=wrap(
-    AnkiWebView.stdHtml,
-    head_buffer,
-    "around"
-)
+from .lib.com.lovac42.anki.version import ANKI21
+func = stdHtml21 if ANKI21 else stdHtml20
+AnkiWebView.stdHtml = wrap(AnkiWebView.stdHtml, func, "around")
